@@ -1,0 +1,53 @@
+plugins {
+    id 'java-library'
+    id 'com.diffplug.spotless' version '8.10.2'
+    id 'com.gradleup.shadow' version '9.5.1'
+}
+
+group = 'org.fakebelieve.tomcat'
+version = '1.0.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Match this to the Tomcat version you're actually deploying to.
+def tomcatVersion = '9.0.121'
+
+dependencies {
+    compileOnly "org.apache.tomcat:tomcat-catalina:${tomcatVersion}"
+    compileOnly "org.apache.tomcat:tomcat-coyote:${tomcatVersion}"
+    compileOnly "org.apache.tomcat:tomcat-util:${tomcatVersion}"
+
+    testImplementation platform('org.junit:junit-bom:6.0.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Produces a plain jar containing just our two small classes.
+// Copy build/libs/tomcat-ip-filter-1.0.0.jar into $CATALINA_HOME/lib.
+jar {
+    archiveBaseName = 'tomcat-preserver'
+}
+
+spotless {
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(2)
+        endWithNewline()
+    }
+    java {
+        target "src/**/*.java"
+        palantirJavaFormat()
+    }
+}

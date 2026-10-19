@@ -1,4 +1,4 @@
-# Tomcat Preserver Valve
+# Tomcat Request Preserver
 
 A lightweight Apache Tomcat Valve that captures and preserves original request headers and server values into request attributes before downstream valves (such as Tomcat's `RemoteIpValve`) modify or strip them.
 
